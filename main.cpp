@@ -13,10 +13,15 @@ sf::RenderWindow window(vm, "Triunghi Nervos", sf::Style::Titlebar | sf::Style::
 sf::Texture bgTexture;
 sf::Sprite bgSprite;
 
+
+
+
 void init();
 void updateInput();
 void update(float);
 void draw();
+
+
 
 // +++++++++++ MAIN FUNCTION +++++++++++
 int main()
@@ -48,6 +53,8 @@ int main()
 void init()
 {
     // Create Sprites and Attach Textures
+    bgTexture.loadFromFile("Assets/graphics/background.png");
+    bgSprite.setTexture(bgTexture);
 }
 
 void updateInput()
@@ -72,4 +79,5 @@ void update(float dt)
 void draw()
 {
     window.clear(sf::Color::Blue);
+    window.draw(bgSprite);
 }
