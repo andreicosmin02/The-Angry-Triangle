@@ -5,24 +5,26 @@
 #include <cmath>
 #define PI 3.14159265
 
+#ifndef TRIUNGHI_NERVOS_SQUARE_H
+#define TRIUNGHI_NERVOS_SQUARE_H
 
-#ifndef TRIUNGHI_NERVOS_TRIANGLE_H
-#define TRIUNGHI_NERVOS_TRIANGLE_H
 
-
-class Triangle
+class Square
 {
 public:
-    Triangle();
-    ~Triangle();
+    Square();
+    ~Square();
 
     void init(std::string textureName, sf::Vector2f position);
-    void rotate(sf::Vector2f mousePosition);
+    void moveTowards(sf::Vector2f targetPos, float speed, float dt);
+
     sf::Sprite getSprite();
-    sf::Vector2f getPosition();
+
 private:
     sf::Texture texture;
     sf::Sprite sprite;
+    sf::Vector2f position;
+    float speed;
 };
 
 

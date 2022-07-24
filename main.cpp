@@ -3,6 +3,7 @@
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
 #include "Triangle.h"
+#include "Square.h"
 
 // Render Setup
 sf::Vector2f viewSize(1600, 900);
@@ -16,14 +17,17 @@ sf::Texture bgTexture;
 sf::Sprite bgSprite;
 
 Triangle triangle;
-
+std::vector<Square*> squares;
 
 void init();
 void updateInput();
 void update(float);
 void draw();
 
+void spawnSquare();
 
+float currentTime = 100;
+float prevTime;
 
 // +++++++++++ MAIN FUNCTION +++++++++++
 int main()
@@ -78,8 +82,22 @@ void updateInput()
 
 void update(float dt)
 {
-    triangle.rotate(sf::Vector2f(sf::Mouse::getPosition(window)),
-                    sf::Vector2f(viewSize.x / 2, viewSize.y / 2));
+
+    triangle.rotate(sf::Vector2f(
+            sf::Mouse::getPosition(window)));
+
+    srand((int)time(0));
+
+    currentTime += dt;
+    if (currentTime >= prevTime + 1)
+    {
+        spawnSquare();
+        prevTime = currentTime;
+    }
+    for (Square *square : squares)
+    {
+        square->moveTowards(triangle.getPosition(), 50, dt);
+    }
 }
 
 void draw()
@@ -87,4 +105,38 @@ void draw()
     window.clear(sf::Color::Blue);
     window.draw(bgSprite);
     window.draw(triangle.getSprite());
+    for (Square *square : squares)
+    {
+        window.draw(square->getSprite());
+    }
+}
+
+void spawnSquare()
+{
+    int randSide = rand() % 4;
+    int randY = rand() % (int)viewSize.x;
+    int randX = rand() % (int)viewSize.y;
+    sf::Vector2f squarePos;
+    float speed;
+
+    switch (randSide)
+    {
+        case 0:
+            squarePos = sf::Vector2f(-100, (float)randY);
+            break;
+        case 1:
+            squarePos = sf::Vector2f((float)viewSize.x + 100, (float)randY);
+            break;
+        case 2:
+            squarePos = sf::Vector2f((float)randX, -100);
+            break;
+        case 3:
+            squarePos = sf::Vector2f((float)randX, (float)viewSize.y + 100);
+            break;
+        default:
+            return;
+    }
+    Square* square = new Square();
+    square->init("Assets/graphics/square.png", squarePos);
+    squares.push_back(square);
 }
