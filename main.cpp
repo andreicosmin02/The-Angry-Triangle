@@ -30,9 +30,14 @@ void draw();
 
 void spawnSquare();
 void shoot();
+bool checkCollision(sf::Sprite sprite1, sf::Sprite sprite2);
+void reset();
 
 float currentTime = 0.0f;
 float prevTime;
+
+int score = 0;
+bool gameOver = true;
 
 // +++++++++++ MAIN FUNCTION +++++++++++
 int main()
@@ -49,7 +54,10 @@ int main()
 
         // update game
         sf::Time dt = clock.restart();
-        update(dt.asSeconds());
+        if (!gameOver)
+        {
+            update(dt.asSeconds());
+        }
 
         // draw game
         draw();
@@ -83,6 +91,14 @@ void updateInput()
             {
                 shoot();
             }
+            if (event.mouseButton.button == sf::Mouse::Right)
+            {
+                if (gameOver)
+                {
+                    gameOver = false;
+                    reset();
+                }
+            }
         }
 
         if (event.type == sf::Event::Closed
@@ -104,14 +120,14 @@ void update(float dt)
     currentTime += dt;
 
     // Update enemies
-    if (currentTime >= prevTime + 1)
+    if (currentTime >= prevTime + 0.74)
     {
         spawnSquare();
         prevTime = currentTime;
     }
     for (Square *square : squares)
     {
-        square->moveTowards(50, dt);
+        square->moveTowards(400, dt);
     }
 
     // Update bullets
@@ -130,6 +146,34 @@ void update(float dt)
             delete(bullet);
         }
     }
+
+    for (int i = 0; i < squares.size(); i++)
+    {
+        Square* square = squares[i];
+        for (int j = 0; j < bullets.size(); j++)
+        {
+            // Check collision between Squares and Bullets
+
+            Bullet* bullet = bullets[j];
+
+            if (checkCollision(bullet->getSprite(), square->getSprite()))
+            {
+                score++;
+
+                squares.erase(squares.begin() + i);
+                bullets.erase(bullets.begin() + j);
+
+                delete(bullet);
+                delete(square);
+            }
+        }
+
+        if (checkCollision(triangle.getSprite(), square->getSprite()))
+        {
+            gameOver = true;
+        }
+    }
+
 }
 
 void draw()
@@ -184,6 +228,42 @@ void shoot()
     Bullet* bullet = new Bullet();
 
     bullet->init("Assets/graphics/bullet.png", triangle.getSprite().getPosition(),
-                 400.0f, sf::Mouse::getPosition(window));
+                 800.0f, sf::Mouse::getPosition(window));
     bullets.push_back(bullet);
+}
+
+bool checkCollision(sf::Sprite sprite1, sf::Sprite sprite2)
+{
+    sf::FloatRect shape1 = sprite1.getGlobalBounds();
+    sf::FloatRect shape2 = sprite2.getGlobalBounds();
+
+
+
+    if (shape1.intersects(shape2))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void reset()
+{
+    score = 0;
+    currentTime = 0.0f;
+    prevTime = 0.0f;
+
+    for (Square *square : squares)
+    {
+        delete(square);
+    }
+    for (Bullet *bullet : bullets)
+    {
+        delete(bullet);
+    }
+
+    squares.clear();
+    bullets.clear();
 }
