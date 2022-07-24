@@ -8,7 +8,7 @@ Square::Square()
 Square::~Square()
 = default;
 
-void Square::init(std::string textureName, sf::Vector2f position)
+void Square::init(std::string textureName, sf::Vector2f position, sf::Vector2f targetPos)
 {
     texture.loadFromFile(textureName.c_str());
     sprite.setTexture(texture);
@@ -16,18 +16,19 @@ void Square::init(std::string textureName, sf::Vector2f position)
     sprite.setPosition(position);
     sprite.setOrigin(texture.getSize().x / 2,
                      texture.getSize().y / 2);
-}
 
-void Square::moveTowards(sf::Vector2f targetPos, float speed, float dt)
-{
-    this->speed = speed;
 
     sf::Vector2f direction(targetPos.x - sprite.getPosition().x,
                            targetPos.y - sprite.getPosition().y);
 
-    double angle = atan2(direction.y, direction.x) * 180 / PI;
+    angle = atan2(direction.y, direction.x);
+}
 
-    sf::Vector2f newPos(std::cos(angle) * speed * dt, std::sin(angle) * speed * dt);
+void Square::moveTowards(float speed, float dt)
+{
+
+
+    sf::Vector2f newPos(cos(angle) * speed * dt, sin(angle) * speed * dt);
     sprite.move(newPos.x , newPos.y );
 }
 

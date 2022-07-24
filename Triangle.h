@@ -19,7 +19,6 @@ public:
     void init(std::string textureName, sf::Vector2f position);
     void rotate(sf::Vector2f mousePosition);
     sf::Sprite getSprite();
-    sf::Vector2f getPosition();
 private:
     sf::Texture texture;
     sf::Sprite sprite;

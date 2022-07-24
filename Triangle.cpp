@@ -28,8 +28,3 @@ sf::Sprite Triangle::getSprite()
 {
     return sprite;
 }
-
-sf::Vector2f Triangle::getPosition()
-{
-    return sprite.getPosition();
-}
