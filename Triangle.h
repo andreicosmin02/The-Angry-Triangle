@@ -20,9 +20,9 @@ public:
     void rotate(sf::Vector2f mousePosition);
     sf::Sprite getSprite();
     sf::Texture getTexture();
+
 private:
     sf::Texture texture;
-
     sf::Sprite sprite;
 };
 
