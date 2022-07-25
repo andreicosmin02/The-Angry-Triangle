@@ -6,9 +6,9 @@ Triangle::Triangle()
 Triangle::~Triangle()
 = default;
 
-void Triangle::init(std::string textureName, sf::Vector2f position)
+void Triangle::init(const std::string& textureName, sf::Vector2f position)
 {
-    texture.loadFromFile(textureName.c_str());
+    texture.loadFromFile(textureName);
     sprite.setTexture(texture);
 
     sprite.setPosition(position);
@@ -27,4 +27,9 @@ void Triangle::rotate(sf::Vector2f mousePosition)
 sf::Sprite Triangle::getSprite()
 {
     return sprite;
+}
+
+sf::Texture Triangle::getTexture()
+{
+    return texture;
 }

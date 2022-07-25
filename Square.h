@@ -15,9 +15,10 @@ public:
     Square();
     ~Square();
 
-    void init(std::string textureName, sf::Vector2f position, sf::Vector2f targetPos);
+    void init(const std::string& textureName, sf::Vector2f position, sf::Vector2f targetPos);
     void moveTowards(float speed, float dt);
     sf::Sprite getSprite();
+    sf::Texture getTexture();
 
 private:
     sf::Texture texture;

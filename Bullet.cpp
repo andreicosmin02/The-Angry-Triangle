@@ -13,7 +13,7 @@ void Bullet::init(const std::string& textureName, sf::Vector2f position, float s
     this->position = position;
 
     // Load a Texture
-    texture.loadFromFile(textureName.c_str());
+    texture.loadFromFile(textureName);
     sprite.setTexture(texture);
     sprite.setPosition(position);
     sprite.setOrigin(texture.getSize().x / 2, texture.getSize().y / 2);
@@ -37,3 +37,7 @@ sf::Sprite Bullet::getSprite()
     return sprite;
 }
 
+sf::Texture Bullet::getTexture()
+{
+    return texture;
+}

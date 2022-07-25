@@ -16,11 +16,13 @@ public:
     Triangle();
     ~Triangle();
 
-    void init(std::string textureName, sf::Vector2f position);
+    void init(const std::string& textureName, sf::Vector2f position);
     void rotate(sf::Vector2f mousePosition);
     sf::Sprite getSprite();
+    sf::Texture getTexture();
 private:
     sf::Texture texture;
+
     sf::Sprite sprite;
 };
 

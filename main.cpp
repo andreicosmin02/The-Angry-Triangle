@@ -23,6 +23,8 @@ Triangle triangle;
 std::vector<Square*> squares;
 std::vector<Bullet*> bullets;
 
+sf::RectangleShape triangleCollider;
+
 void init();
 void updateInput();
 void update(float);
@@ -30,7 +32,8 @@ void draw();
 
 void spawnSquare();
 void shoot();
-bool checkCollision(sf::Sprite sprite1, sf::Sprite sprite2);
+bool checkCollision(const sf::Sprite& sprite1, const sf::Sprite& sprite2);
+bool checkCollision(const sf::RectangleShape& rect, const sf::Sprite& sprite);
 void reset();
 
 float currentTime = 0.0f;
@@ -77,6 +80,13 @@ void init()
 
     triangle.init("Assets/graphics/triangle.png",
                   sf::Vector2f(viewSize.x / 2, viewSize.y / 2));
+
+    triangleCollider.setFillColor(sf::Color::Transparent);
+    triangleCollider.setSize(sf::Vector2f(triangle.getTexture().getSize().x / 2,
+                                        triangle.getTexture().getSize().y / 2));
+    triangleCollider.setPosition(viewSize.x / 2, viewSize.y / 2);
+    triangleCollider.setOrigin(triangleCollider.getSize().x / 2,
+                             triangleCollider.getSize().y / 2);
 }
 
 void updateInput()
@@ -120,7 +130,7 @@ void update(float dt)
     currentTime += dt;
 
     // Update enemies
-    if (currentTime >= prevTime + 0.74)
+    if (currentTime >= prevTime + 0.5)
     {
         spawnSquare();
         prevTime = currentTime;
@@ -168,12 +178,14 @@ void update(float dt)
             }
         }
 
-        if (checkCollision(triangle.getSprite(), square->getSprite()))
+        sf::FloatRect shape1 = triangleCollider.getGlobalBounds();
+        sf::FloatRect shape2 = square->getSprite().getGlobalBounds();
+
+        if (checkCollision(triangleCollider, square->getSprite()))
         {
             gameOver = true;
         }
     }
-
 }
 
 void draw()
@@ -189,7 +201,7 @@ void draw()
     {
         window.draw(square->getSprite());
     }
-
+    window.draw(triangleCollider);
 }
 
 void spawnSquare()
@@ -217,7 +229,7 @@ void spawnSquare()
         default:
             return;
     }
-    Square* square = new Square();
+    auto* square = new Square();
     square->init("Assets/graphics/square.png", squarePos,
                  triangle.getSprite().getPosition());
     squares.push_back(square);
@@ -225,19 +237,33 @@ void spawnSquare()
 
 void shoot()
 {
-    Bullet* bullet = new Bullet();
+    auto* bullet = new Bullet();
 
-    bullet->init("Assets/graphics/bullet.png", triangle.getSprite().getPosition(),
+    bullet->init("Assets/graphics/bullet.png",
+                 triangle.getSprite().getPosition(),
                  800.0f, sf::Mouse::getPosition(window));
     bullets.push_back(bullet);
 }
 
-bool checkCollision(sf::Sprite sprite1, sf::Sprite sprite2)
+bool checkCollision(const sf::Sprite& sprite1, const sf::Sprite& sprite2)
 {
     sf::FloatRect shape1 = sprite1.getGlobalBounds();
     sf::FloatRect shape2 = sprite2.getGlobalBounds();
 
+    if (shape1.intersects(shape2))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
+bool checkCollision(const sf::RectangleShape& rect, const sf::Sprite& sprite)
+{
+    sf::FloatRect shape1 = rect.getGlobalBounds();
+    sf::FloatRect shape2 = sprite.getGlobalBounds();
 
     if (shape1.intersects(shape2))
     {

@@ -19,6 +19,7 @@ public:
               sf::Vector2<int> mousePos);
     void update(float dt);
     sf::Sprite getSprite();
+    sf::Texture getTexture();
 
 private:
     sf::Texture texture;
